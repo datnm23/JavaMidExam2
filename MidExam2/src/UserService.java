@@ -13,15 +13,14 @@ import com.google.gson.reflect.TypeToken;
 
 public class UserService {
     private static final Scanner SCANNER = new Scanner(System.in);
-    private static final String REGEX_EMAIL_PATTERN = "^[a-zA-Z][\\\\w-]+@([\\\\w]+\\\\.[\\\\w]+|[\\\\w]+\\\\.[\\\\";
+    private static final String REGEX_EMAIL_PATTERN = "^[a-zA-Z][\\\\w-]+@([\\\\w]+\\\\.[\\\\w]+|[\\\\w]+\\\\.[\\\\w]{2,}\\\\.[\\\\w]{2,})$";
     private static final String REGEX_PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$";
 
     private ArrayList<User> users;
 
-    public UserService() throws IOException {
+    public UserService() {
         Gson gson = new Gson();
         try {
-            File f = new File("users.json");
             FileReader reader = new FileReader("users.json");
             Type type = new TypeToken<ArrayList<User>>() {
             }.getType();
@@ -37,8 +36,6 @@ public class UserService {
             File f = new File("users.json");
             System.out.println(f.getAbsolutePath());
             FileReader writer = new FileReader("users.json");
-            Type type = new TypeToken<ArrayList<User>>() {
-            }.getType();
             gson.toJson(users);
             writer.close();
         } catch (FileNotFoundException e) {
@@ -102,7 +99,7 @@ public class UserService {
         return userLogin;
     }
 
-    public void changeUserName(User userLogin) throws IOException {
+    public void changeUserName(User userLogin) {
         boolean checkUsername = false;
         while (!checkUsername) {
             System.out.println("Nhập Username mới");
@@ -121,7 +118,7 @@ public class UserService {
         }
     }
 
-    public void changeUserEmail(User userLogin) throws IOException {
+    public void changeUserEmail(User userLogin) {
         boolean checkEmail = false;
         while (!checkEmail) {
             System.out.println("Nhập Email mới");
@@ -138,7 +135,7 @@ public class UserService {
         System.out.println("Thay đổi Email thành công ! Email mới của bạn là :" + userLogin.getUserEmail());
     }
 
-    public void changeUserPassword(User userLogin) throws IOException {
+    public void changeUserPassword(User userLogin) {
         boolean checkPassword = false;
         System.out.println("Password must contain at least one digit [0-9].at least one lowercase Latin character [a-z].at least one uppercase Latin character [A-Z].at least one special character.a length of at least 8 characters and a maximum of 20 characters ");
         while (!checkPassword) {
@@ -224,9 +221,9 @@ public class UserService {
             String email = SCANNER.nextLine();
             checkInvalidEmail = true;
             if (checkEmail(email)) {
-                for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getUserEmail().equalsIgnoreCase(email)) {
-                        changeUserPassword(users.get(i));
+                for (User user : users) {
+                    if (user.getUserEmail().equalsIgnoreCase(email)) {
+                        changeUserPassword(user);
                         Menu menu = new Menu();
                         menu.displayMenuHome();
                         break;
